@@ -1,0 +1,11 @@
+{
+ "Name": "Grandma's Grimoire",
+ "ID": "grandmas grimoire",
+ "Author": "it.Carl",
+ "Description": "A spell assistant for the Wizard Tower. A Grimoire cast is not rolled when you click it: the game seeds its generator with your save seed and the number of spells you have ever cast, so the outcome of your next cast is already fixed. This reads it, tells you whether that cast wins or backfires before you spend the magic, and for Force the Hand of Fate names the exact golden cookie you would get. It also shows costs and how long until each spell is affordable, and can cast for you - off by default, armed one spell at a time, and never on a roll it can see will backfire.",
+ "ModVersion": 1.0,
+ "GameVersion": 2.053,
+ "Date": "28/08/2026",
+ "Dependencies": [],
+ "AllowSteamAchievs": 1
+}
