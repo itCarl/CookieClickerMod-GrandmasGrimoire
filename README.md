@@ -8,17 +8,17 @@
   <p align="center">
     Know what your next Cookie Clicker spell does before you spend the magic.
     <br />
-    <a href="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/releases"><strong>Download the latest release</strong></a>
+    <a href="https://github.com/itCarl/GrandmasGrimoire/releases"><strong>Download the latest release</strong></a>
     <br />
     <br />
-    <a href="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/issues/new?labels=bug">Report Bug</a>
+    <a href="https://github.com/itCarl/GrandmasGrimoire/issues/new?labels=bug">Report Bug</a>
     &middot;
-    <a href="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/issues/new?labels=enhancement">Request Feature</a>
+    <a href="https://github.com/itCarl/GrandmasGrimoire/issues/new?labels=enhancement">Request Feature</a>
   </p>
 
   <p align="center">
-    <img src="https://img.shields.io/github/v/release/itCarl/cookie-clicker-grandmas-grimoire" alt="Release">
-    <img src="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/actions/workflows/release.yml/badge.svg" alt="CI">
+    <img src="https://img.shields.io/github/v/release/itCarl/GrandmasGrimoire" alt="Release">
+    <img src="https://github.com/itCarl/GrandmasGrimoire/actions/workflows/release.yml/badge.svg" alt="CI">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
   </p>
 </div>
@@ -88,7 +88,7 @@ cast for maximum cookies.
 ### Manual
 
 1. Download `GrandmasGrimoire.zip` from
-   [GitHub Releases](https://github.com/itCarl/cookie-clicker-grandmas-grimoire/releases).
+   [GitHub Releases](https://github.com/itCarl/GrandmasGrimoire/releases).
 2. Unzip it into
    `<Cookie Clicker>/resources/app/mods/local/GrandmasGrimoire/`.
 3. Restart the game and enable the mod under **Options -> Mods**. The panel
