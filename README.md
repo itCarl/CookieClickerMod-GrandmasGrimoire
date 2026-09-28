@@ -46,6 +46,8 @@
 Grandma's Grimoire is a spell assistant for Cookie Clicker's Wizard Tower
 minigame.
 
+![The spell table, with the next cast's outcome already known](docs/screenshots/gmg-panel.png)
+
 A Grimoire cast is not rolled when you click it. The game seeds the roll from
 your save seed plus the number of spells you have ever cast:
 
