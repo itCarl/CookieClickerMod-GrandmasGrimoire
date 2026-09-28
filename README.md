@@ -1,10 +1,47 @@
-# Grandma's Grimoire
+<a id="readme-top"></a>
 
-Know what your next Cookie Clicker spell does before you spend the magic.
+<div align="center">
+  <img src="docs/logo.png" alt="Logo" width="128" height="128">
 
-![Release](https://img.shields.io/github/v/release/itCarl/cookie-clicker-grandmas-grimoire) ![CI](https://github.com/itCarl/cookie-clicker-grandmas-grimoire/actions/workflows/release.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+  <h3 align="center">Grandma's Grimoire</h3>
 
-## About
+  <p align="center">
+    Know what your next Cookie Clicker spell does before you spend the magic.
+    <br />
+    <a href="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/releases"><strong>Download the latest release</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/issues/new?labels=bug">Report Bug</a>
+    &middot;
+    <a href="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/issues/new?labels=enhancement">Request Feature</a>
+  </p>
+
+  <p align="center">
+    <img src="https://img.shields.io/github/v/release/itCarl/cookie-clicker-grandmas-grimoire" alt="Release">
+    <img src="https://github.com/itCarl/cookie-clicker-grandmas-grimoire/actions/workflows/release.yml/badge.svg" alt="CI">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+  </p>
+</div>
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#about-the-project">About The Project</a></li>
+    <li><a href="#features">Features</a></li>
+    <li>
+      <a href="#installation">Installation</a>
+      <ul>
+        <li><a href="#manual">Manual</a></li>
+      </ul>
+    </li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#development">Development</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+## About The Project
 
 Grandma's Grimoire is a spell assistant for Cookie Clicker's Wizard Tower
 minigame.
@@ -21,6 +58,8 @@ The mod reads it before you spend the magic - the WIN / BACKFIRE it shows is not
 a probability, it is the result. For Force the Hand of Fate it names the exact
 golden cookie you would get, and in profit mode it reads twenty rolls ahead to
 cast for maximum cookies.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
 
@@ -42,6 +81,8 @@ cast for maximum cookies.
 - **Leaves the game alone** - hands the global random generator straight back,
   so nothing else in the game becomes predictable.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Installation
 
 ### Manual
@@ -53,7 +94,9 @@ cast for maximum cookies.
 3. Restart the game and enable the mod under **Options -> Mods**. The panel
    appears under the Grimoire.
 
-## How it works
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## How It Works
 
 - **Every spell shares the same roll.** The seed depends only on how many spells
   you have cast, not on which one you pick. Whichever you cast first takes it.
@@ -72,6 +115,8 @@ cast for maximum cookies.
 
 Predictions are verified by predicting and then actually casting, across seeds,
 seasons, building counts and buffs.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Development
 
@@ -99,6 +144,16 @@ game's sources from a local Steam install of Cookie Clicker.
 `mod/main.js` is ASCII only: the game's `index.html` declares no
 `<meta charset>` and injects mod scripts with `createElement('script')`.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for details.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Acknowledgments
+
+- [Orteil's Cookie Clicker](https://orteil.dashnet.org/cookieclicker/) - the game this mod reads everything from
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>

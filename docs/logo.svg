@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#120c1c"/>
+  <!-- crest ring -->
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#2c2140" stroke-width="6"/>
+  <circle cx="256" cy="256" r="180" fill="#1a1128" stroke="#8d5fd3" stroke-width="5"/>
+  <!-- star ornaments on the ring -->
+  <g fill="#c0a0f0">
+    <path d="M256 60 L262 78 L280 84 L262 90 L256 108 L250 90 L232 84 L250 78 Z"/>
+    <circle cx="88" cy="256" r="7"/>
+    <circle cx="424" cy="256" r="7"/>
+    <circle cx="256" cy="436" r="7"/>
+  </g>
+  <!-- open book -->
+  <g>
+    <path d="M256 356 C 224 336, 166 332, 136 342 L136 208 C 166 198, 224 202, 256 222 Z" fill="#2a1d40" stroke="#8d5fd3" stroke-width="11" stroke-linejoin="round"/>
+    <path d="M256 356 C 288 336, 346 332, 376 342 L376 208 C 346 198, 288 202, 256 222 Z" fill="#2a1d40" stroke="#8d5fd3" stroke-width="11" stroke-linejoin="round"/>
+    <line x1="256" y1="222" x2="256" y2="356" stroke="#8d5fd3" stroke-width="9"/>
+    <g stroke="#5d4485" stroke-width="7" stroke-linecap="round">
+      <line x1="162" y1="242" x2="228" y2="254"/>
+      <line x1="162" y1="276" x2="228" y2="288"/>
+      <line x1="284" y1="254" x2="350" y2="242"/>
+      <line x1="284" y1="288" x2="350" y2="276"/>
+    </g>
+  </g>
+  <!-- sparkle above the book -->
+  <path d="M256 118 L268 158 L308 170 L268 182 L256 222 L244 182 L204 170 L244 158 Z" fill="#c0a0f0"/>
+  <circle cx="318" cy="132" r="9" fill="#c0a0f0"/>
+  <circle cx="196" cy="140" r="6" fill="#8d5fd3"/>
+</svg>
