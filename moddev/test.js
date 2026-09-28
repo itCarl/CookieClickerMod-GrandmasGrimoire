@@ -693,6 +693,50 @@ console.log('\npersistence');
 	eq('and the defaults hold', sb3.mod.getSettings().autoArmed, false);
 })();
 
+/* ------------------------------------------------------------------ *
+ * 8. The prediction cache must notice what moves the fail chance
+ * ------------------------------------------------------------------ */
+console.log('\ncache invalidation');
+(function () {
+	// Fate's fail chance climbs 15% per golden cookie already on screen
+	// (minigameGrimoire.js failFunc), so a prediction computed with an empty
+	// screen is stale the moment a cookie spawns - the cache key has to carry
+	// the count, or the panel shows a WIN that backfires.
+	var sb = fresh({seed: 'abcde', towers: 150, level: 5});
+	var p1 = sb.mod.getPredictions();
+	ok('a second read with nothing changed is the cached object',
+		sb.mod.getPredictions() === p1);
+
+	sb.Game.shimmerTypes['golden'].n = 3;
+	var p2 = sb.mod.getPredictions();
+	ok('a golden cookie on screen recomputes the predictions', p2 !== p1);
+	ok('and the fail chance actually moved',
+		p2['hand of fate'].failChance > p1['hand of fate'].failChance,
+		p1['hand of fate'].failChance + ' -> ' + p2['hand of fate'].failChance);
+	sb.Game.shimmerTypes['golden'].n = 0;
+})();
+
+/* ------------------------------------------------------------------ *
+ * 9. Burning must never cost cookies
+ * ------------------------------------------------------------------ */
+console.log('\nburn order');
+(function () {
+	// A burn exists to advance the seed cheaply on a known-bad roll. Conjure
+	// Baked Goods backfires into a 15-minute clot plus 15 minutes of CpS lost,
+	// so it must never be used as a burn.
+	var sb = fresh({seed: 'abcde', towers: 150, level: 5});
+	var burn = sb.mod.getBurnOrder();
+	ok('burn order is not empty', burn.length > 0);
+	eq('conjure baked goods is not a burn spell', burn.indexOf('conjure baked goods'), -1);
+	var known = {"haggler's charm": 1, 'summon crafty pixies': 1};
+	var allCheap = true;
+	for (var i = 0; i < burn.length; i++) {
+		if (!known[burn[i]]) allCheap = false;
+		if (!sb.M.spells[burn[i]]) allCheap = false;
+	}
+	ok('every burn spell is real and known-cheap', allCheap, JSON.stringify(burn));
+})();
+
 /* ------------------------------------------------------------------ */
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 process.exit(failed ? 1 : 0);

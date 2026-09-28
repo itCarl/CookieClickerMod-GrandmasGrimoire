@@ -24,7 +24,7 @@
 'use strict';
 
 var MOD_ID   = 'grandmas grimoire';
-var VERSION  = '1.0';
+var VERSION  = '1.1';
 var PANEL_ID = 'grandmasGrimoirePanel';
 
 /* ------------------------------------------------------------------ *
@@ -77,7 +77,9 @@ var DEFAULTS = {
 // almost nothing, and that always counts as a cast. Haggler's Charm fits:
 // a backfire makes upgrades 2% pricier for an hour and nothing else, and unlike
 // Stretch Time it never returns -1 and leave the counter where it was.
-var BURN_ORDER = ["haggler's charm", 'summon crafty pixies', 'conjure baked goods'];
+// Conjure Baked Goods does NOT belong here: its backfire is a 15-minute clot
+// plus 15 minutes of production lost - a burn that costs real cookies.
+var BURN_ORDER = ["haggler's charm", 'summon crafty pixies'];
 
 var S = {};
 (function () {
@@ -208,7 +210,12 @@ function predictions(m) {
 		Game.hasBuff('Dragonflight') ? 1 : 0,
 		Game.hasBuff('Magic adept') ? 1 : 0,
 		Game.hasBuff('Magic inept') ? 1 : 0,
-		Math.round(m.magicM)
+		Math.round(m.magicM),
+		// Fate's fail chance climbs 15% per golden cookie already on screen,
+		// and Supreme Intellect scales every fail chance and cost - both can
+		// change between casts, and a WIN shown while they drift is stale.
+		Game.shimmerTypes && Game.shimmerTypes['golden'] ? Game.shimmerTypes['golden'].n : 0,
+		typeof Game.auraMult === 'function' ? Game.auraMult('Supreme Intellect') : 0
 	].join('|');
 	if (predCache.key === key) return predCache.data;
 
@@ -258,6 +265,32 @@ var LOOKAHEAD = 20;      // casts to read ahead when deciding whether to wait
  * Everything not valued here returns null. The profit planner will not spend
  * magic on a spell it cannot price; those stay available to arm by hand.
  */
+/**
+ * The game's buff-duration multiplier for a golden cookie effect. There is no
+ * game function that returns it - the chain sits inline where a shimmer pops
+ * (game main.js:5459-5477) - so only the chain is mirrored here; every value
+ * in it is read from the game (Game.Has, Game.auraMult, Game.eff, Game.hasGod).
+ * Spell-forced cookies that win are never wrath, so the golden branch is used.
+ */
+function effectDurMod() {
+	var d = 1;
+	if (Game.Has('Get lucky')) d *= 2;
+	if (Game.Has('Lasting fortune')) d *= 1.1;
+	if (Game.Has('Lucky digit')) d *= 1.01;
+	if (Game.Has('Lucky number')) d *= 1.01;
+	if (Game.Has('Green yeast digestives')) d *= 1.01;
+	if (Game.Has('Lucky payout')) d *= 1.01;
+	if (typeof Game.auraMult === 'function') d *= 1 + Game.auraMult('Epoch Manipulator') * 0.05;
+	if (typeof Game.eff === 'function') d *= Game.eff('goldenCookieEffDur');
+	if (typeof Game.hasGod === 'function') {
+		var godLvl = Game.hasGod('decadence');
+		if (godLvl == 1) d *= 1.07;
+		else if (godLvl == 2) d *= 1.05;
+		else if (godLvl == 3) d *= 1.02;
+	}
+	return d;
+}
+
 function spellValue(m, key, pred) {
 	if (!pred || !pred.wins) return null;
 	var cookies = Game.cookies, cps = Game.cookiesPs;
@@ -281,22 +314,29 @@ function spellValue(m, key, pred) {
 				note: 'a Lucky, worth 15% of your bank or 15 minutes, whichever is less'
 			};
 		}
+		// Buff-window estimates scale with the game's own duration multiplier
+		// (Get Lucky alone doubles them - ignoring it undervalued a Frenzy
+		// against a Lucky by up to 2.2x late game).
+		var dur = effectDurMod();
 		if (pred.fate === 'frenzy') {
-			// x7 for 77 seconds. Refreshing a Frenzy that is already running
-			// replaces it rather than stacking, so it is worth far less then.
+			// x7 for 77 seconds base. Refreshing a Frenzy that is already
+			// running replaces it rather than stacking, so it is worth far
+			// less then.
 			if (Game.hasBuff('Frenzy')) {
 				return {cookies: cps * 20, exact: false, note: 'a Frenzy, but one is already running'};
 			}
-			return {cookies: 6 * cps * 77, exact: false, note: 'a Frenzy: x7 production for 77 seconds'};
+			return {cookies: 6 * cps * Math.ceil(77 * dur), exact: false,
+				note: 'a Frenzy: x7 production for ' + Math.ceil(77 * dur) + ' seconds'};
 		}
 		if (pred.fate === 'building special') {
-			return {cookies: cps * 60 * 10, exact: false, note: 'a Building Special'};
+			return {cookies: cps * 60 * 10 * dur, exact: false, note: 'a Building Special'};
 		}
 		if (pred.fate === 'cookie storm') {
-			return {cookies: cps * 60 * 7, exact: false, note: 'a Cookie Storm'};
+			return {cookies: cps * 60 * 7 * dur, exact: false, note: 'a Cookie Storm'};
 		}
 		if (pred.fate === 'blood frenzy') {
-			return {cookies: 665 * cps * 6, exact: false, note: 'a Blood Frenzy: x666 for 6 seconds'};
+			return {cookies: 665 * cps * Math.ceil(6 * dur), exact: false,
+				note: 'a Blood Frenzy: x666 for ' + Math.ceil(6 * dur) + ' seconds'};
 		}
 		// Click frenzies are only worth anything if you are clicking, and a
 		// Cookie Storm drop is a single cookie. Neither is worth planning for.
@@ -565,18 +605,19 @@ function tip(key) {
 function buildCSS() {
 return [
 	'#' + PANEL_ID + '{position:relative;z-index:120;margin:0;padding:8px 24px 10px 24px;',
-	'background:rgba(0,0,0,0.84);color:#e8e8e8;font-size:14px;',
+	'background:rgba(0,0,0,0.82);color:#e8e8e8;font-size:14px;',
 	'border-top:1px solid #8d5fd3;box-shadow:0 0 8px rgba(0,0,0,0.6) inset;text-align:left;}',
 	'#' + PANEL_ID + ' .gmgRow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:4px 0;}',
 	'#' + PANEL_ID + ' .gmgTitle{font-weight:bold;color:#c0a0f0;letter-spacing:1px;}',
+	'#' + PANEL_ID + ' .gmgVer{font-weight:normal;font-size:10px;letter-spacing:0;opacity:0.55;margin-left:5px;}',
 	'#' + PANEL_ID + ' .gmgBtn{cursor:pointer;border:1px solid rgba(255,255,255,0.35);border-radius:3px;',
 	'padding:1px 9px;font-weight:bold;font-size:13px;background:rgba(255,255,255,0.08);color:#fff;}',
 	'#' + PANEL_ID + ' .gmgBtn:hover{background:rgba(255,255,255,0.2);}',
 	'#' + PANEL_ID + ' .gmgBtn.gmgOn{background:#8d5fd3;color:#fff;border-color:#cbb0f0;}',
 	'#' + PANEL_ID + ' .gmgStat{font-size:13px;color:#bbb;}',
 	'#' + PANEL_ID + ' .gmgStat b{color:#fff;}',
-	'#' + PANEL_ID + ' .gmgSep{border:0;height:1px;background:#413352;margin:6px 0;}',
-	'#' + PANEL_ID + ' .gmgNote{font-size:12px;color:#9a9a9a;max-width:660px;line-height:1.45;}',
+	'#' + PANEL_ID + ' .gmgSep{border:0;height:1px;background:#3f3f3f;margin:6px 0;}',
+	'#' + PANEL_ID + ' .gmgNote{font-size:12px;color:#9a9a9a;max-width:640px;line-height:1.4;}',
 	'#' + PANEL_ID + ' table{border-collapse:collapse;font-size:13px;}',
 	'#' + PANEL_ID + ' td{padding:2px 8px;white-space:nowrap;vertical-align:middle;}',
 	'#' + PANEL_ID + ' td.gmgNum{text-align:right;font-family:monospace;}',
@@ -622,7 +663,7 @@ function buildPanel(host, m) {
 	panel.id = PANEL_ID;
 	panel.innerHTML =
 		'<div class="gmgRow">' +
-			'<span class="gmgTitle">GRANDMA&#39;S GRIMOIRE</span>' +
+			'<span class="gmgTitle">GRANDMA&#39;S GRIMOIRE<span class="gmgVer">v' + VERSION + '</span></span>' +
 			'<span class="gmgStat" id="gmgMagic"' + tip('magic') + '></span>' +
 			'<span class="gmgBar"><span class="gmgBarFull" id="gmgBar" style="width:0%;"></span></span>' +
 			'<div class="gmgBtn" data-act="auto" id="gmgAutoBtn"' + tip('auto') + '>Auto-cast</div>' +
@@ -1011,6 +1052,7 @@ Game.registerMod(MOD_ID, {
 	chooseAutoCast: function () { var m = grimoire(); return m ? chooseAutoCast(m, predictions(m)) : null; },
 	runAutoNow:     function () { var m = grimoire(); if (m) runAuto(m); },
 	invalidate:     function () { predCache.key = ''; },
+	getBurnOrder:   function () { return BURN_ORDER.slice(); },
 	spellValue:     function (key) { var m = grimoire(); if (!m) return null;
 	                                 var p = predictions(m); return p ? spellValue(m, key, p[key]) : null; },
 	lookahead:      function (n) { var m = grimoire(); return m ? lookaheadFate(m, n || LOOKAHEAD) : null; },
